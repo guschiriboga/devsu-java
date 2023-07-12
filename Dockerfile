@@ -1,4 +1,4 @@
-FROM maven:3.9.3-eclipse-temurin-11 AS TEMP_BUILD_IMAGE
+FROM maven AS TEMP_BUILD_IMAGE
 COPY . .
 USER root
 RUN mvn clean package
