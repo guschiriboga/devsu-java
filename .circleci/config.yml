@@ -1,0 +1,17 @@
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@8.1.3
+
+workflows:
+  build_and_push_image:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          name: build-push-image
+          filters:
+            branches:
+              only:
+                - main
+          repo: "${AWS_ECR_REGISTRY_URL}"
+          tag: "latest"
+          dockerfile: Dockerfile
+          path: .
