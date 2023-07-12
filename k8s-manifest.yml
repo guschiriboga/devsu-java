@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-demo
+spec:
+  selector:
+    app: java-demo
+  ports:
+    - port: 80
+      name: api
+      protocol: TCP
+      targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-demo
+  template:
+    metadata:
+      labels:
+        app: java-demo
+    spec:
+      containers:
+        - name: java-demo
+          image: 716635345492.dkr.ecr.us-west-2.amazonaws.com/iap-tmp-backend:latest
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 130
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /swagger-ui/index.html
+              port: 8000
+            initialDelaySeconds: 150
+            periodSeconds: 5
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8000
+
