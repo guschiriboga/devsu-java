@@ -12,6 +12,6 @@ workflows:
               only:
                 - main
           repo: "${AWS_ECR_REGISTRY_URL}"
-          tag: "latest"
+          tag: "${AWS_ECR_REGISTRY_NAME}:latest"
           dockerfile: Dockerfile
           path: .
