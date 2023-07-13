@@ -12,7 +12,7 @@ workflows:
             branches:
               only:
                 - main
-          tag: '17'
+          tag: '17.0.7'
           command: 'clean test'
       - aws-ecr/build-and-push-image:
           name: build-push-image
