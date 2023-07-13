@@ -17,13 +17,23 @@ jobs:
         description: |
           AWS Region of the EKS cluster
         type: string
+      ecr-id:
+        description: |
+          AWS Account ID
+        type: string
     steps:
       - checkout
-      - run:
-          command: |
-            aws eks update-kubeconfig --region << parameters.region >> --name << parameters.cluster-name >>
       - kubernetes/install-kubectl
       - run:
+          name: ecr-login
+          command: |
+            aws ecr get-login-password --region << parameters.region >> | docker login --username AWS --password-stdin << parameters.ecr-id >>.dkr.ecr.<< parameters.region >>.amazonaws.com
+      - run:
+          name: kubectl-config
+          command: |
+            aws eks update-kubeconfig --region << parameters.region >> --name << parameters.cluster-name >>
+      - run:
+          name: apply-manifest
           command: |
             kubectl apply -f k8s-manifest.yml
 
@@ -60,5 +70,6 @@ workflows:
                 - main
           cluster-name: "${AWS_EKS_CLUSTER_NAME}"
           region: "${AWS_REGION}"
+          ecr-id: "${AWS_ECR_REGISTRY_ID}"
           requires:
             - build-push-image
