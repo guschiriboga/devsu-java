@@ -12,6 +12,7 @@ workflows:
             branches:
               only:
                 - main
+          command: 'clean test'
       - aws-ecr/build-and-push-image:
           name: build-push-image
           filters:
