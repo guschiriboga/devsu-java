@@ -49,7 +49,7 @@ jobs:
           name: Test kubectl
           command: |
             kubectl version 
-            sudo kubectl config view
+            kubectl current-context
 workflows:
   java_demo_test_build_deploy:
     jobs:
