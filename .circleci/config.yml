@@ -49,32 +49,33 @@ jobs:
           name: Apply k8s manifest
           command: |
             kubectl apply -f k8s-manifest.yml
+            kubectl get services
 
 workflows:
   java_demo_test_build_deploy:
     jobs:
-#      - maven/test:
-#          name: code-test
-#          filters:
-#            branches:
-#              only:
-#                - main
-#          executor:
-#            name: maven/default
-#            tag: 17.0.7
-#          command: 'clean test'
-#      - aws-ecr/build-and-push-image:
-#          name: build-push-image
-#          filters:
-#            branches:
-#              only:
-#                - main
-#          repo: "${AWS_ECR_REGISTRY_NAME}"
-#          tag: "latest"
-#          dockerfile: Dockerfile-run
-#          path: .
-#          requires:
-#            - code-test
+      - maven/test:
+          name: code-test
+          filters:
+            branches:
+              only:
+                - main
+          executor:
+            name: maven/default
+            tag: 17.0.7
+          command: 'clean test'
+      - aws-ecr/build-and-push-image:
+          name: build-push-image
+          filters:
+            branches:
+              only:
+                - main
+          repo: "${AWS_ECR_REGISTRY_NAME}"
+          tag: "latest"
+          dockerfile: Dockerfile-run
+          path: .
+          requires:
+            - code-test
       - create-deployment:
           name: deploy-to-k8s
           filters:
@@ -84,5 +85,5 @@ workflows:
           cluster-name: "${AWS_EKS_CLUSTER_NAME}"
           region: "${AWS_REGION}"
           ecr-id: "${AWS_ECR_REGISTRY_ID}"
-#          requires:
-#            - build-push-image
+          requires:
+            - build-push-image
