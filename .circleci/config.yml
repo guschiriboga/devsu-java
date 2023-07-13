@@ -25,17 +25,13 @@ jobs:
       - checkout
       - kubernetes/install-kubectl
       - run:
-          name: ecr-login
+          name: k8s-deploy
           command: |
+            #!/bin/bash
             aws ecr get-login-password --region << parameters.region >> | docker login --username AWS --password-stdin << parameters.ecr-id >>.dkr.ecr.<< parameters.region >>.amazonaws.com
-      - run:
-          name: kubectl-config
-          command: |
             aws eks update-kubeconfig --region << parameters.region >> --name << parameters.cluster-name >>
-      - run:
-          name: apply-manifest
-          command: |
-            kubectl apply --context arn:aws:eks:<< parameters.region >>:<< parameters.ecr-id >>:cluster/<< parameters.cluster-name >> -f k8s-manifest.yml
+            kubectl config use-context arn:aws:eks:<< parameters.region >>:<< parameters.ecr-id >>:cluster/<< parameters.cluster-name >>
+            kubectl apply -f k8s-manifest.yml
 
 workflows:
   java_demo_test_build_deploy:
