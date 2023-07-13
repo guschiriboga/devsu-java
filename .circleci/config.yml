@@ -14,6 +14,7 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: k8s-manifest.yml
+          resource-name: java-demo
           show-kubectl-command: true
 
 workflows:
