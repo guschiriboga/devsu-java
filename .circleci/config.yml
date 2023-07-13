@@ -12,8 +12,9 @@ workflows:
             branches:
               only:
                 - main
-          parameters:
-            - tag: '17.0.7'
+          executor:
+            name: maven/default
+            tag: 17.0.7
           command: 'clean test'
       - aws-ecr/build-and-push-image:
           name: build-push-image
