@@ -45,13 +45,11 @@ jobs:
           name: Configure Kubectl
           command: |
             aws eks update-kubeconfig --region us-west-2 --name iap-tmp-eks
-            cat /home/circleci/.kube/config
       - run:
-          name: Test kubectl
+          name: Apply k8s manifest
           command: |
-            kubectl version
-            kubectl config set-context arn:aws:eks:us-west-2:716635345492:cluster/iap-tmp-eks
-            kubectl current-context
+            kubectl apply -t java-demo -f k8s-manifest.yml
+
 workflows:
   java_demo_test_build_deploy:
     jobs:
