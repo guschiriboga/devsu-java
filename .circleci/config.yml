@@ -4,6 +4,18 @@ orbs:
   maven: circleci/maven@1.4.1
   kubernetes: circleci/kubernetes@1.3.0
 
+jobs:
+  create-update:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - kubernetes/install-kubectl
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: k8s-manifest.yml
+          show-kubectl-command: true
+
 workflows:
   java_demo_test_build_deploy:
     jobs:
@@ -29,6 +41,11 @@ workflows:
           path: .
           requires:
             - code-test
-      - kubernetes/create-or-update-resource:
-          resource-file-path: k8s-manifest.yml
-          resource-name: "java-demo"
+      - create-update:
+          name: deploy-to-k8s
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - build-push-image
