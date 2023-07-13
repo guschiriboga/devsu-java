@@ -27,6 +27,8 @@ jobs:
       - run:
           name: aws-configure
           command: |
+            sudo apt-get install awscli groff -y
+            pip install awscli
             aws configure set default.region << parameters.region >>
             aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
             aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
