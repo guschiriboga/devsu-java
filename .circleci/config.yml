@@ -45,6 +45,7 @@ jobs:
           name: Configure Kubectl
           command: |
             aws eks update-kubeconfig --region us-west-2 --name iap-tmp-eks
+            cat /home/circleci/.kube/config
       - run:
           name: Test kubectl
           command: |
