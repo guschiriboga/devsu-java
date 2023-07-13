@@ -44,11 +44,12 @@ jobs:
       - run:
           name: Configure Kubectl
           command: |
-            aws eks --region << parameters.region >> update-kubeconfig --name << parameters.cluster-name >>
+            aws eks update-kubeconfig --region us-west-2 --name iap-tmp-eks
       - run:
           name: Test kubectl
           command: |
-            kubectl version 
+            kubectl version
+            kubectl config set-context arn:aws:eks:us-west-2:716635345492:cluster/iap-tmp-eks
             kubectl current-context
 workflows:
   java_demo_test_build_deploy:
