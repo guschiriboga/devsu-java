@@ -48,8 +48,8 @@ jobs:
       - run:
           name: Test kubectl
           command: |
-            kubectl version --client
-            kubectl get all
+            kubectl version 
+            kubectl config view
 workflows:
   java_demo_test_build_deploy:
     jobs:
