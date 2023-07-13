@@ -27,6 +27,7 @@ jobs:
       - run:
           name: aws-configure
           command: |
+            sudo apt-get update -y
             sudo apt-get install awscli groff -y
             pip install awscli
             aws configure set default.region << parameters.region >>
