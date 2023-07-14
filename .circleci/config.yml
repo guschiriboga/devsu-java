@@ -5,6 +5,17 @@ orbs:
   kubernetes: circleci/kubernetes@1.3.1
 
 jobs:
+  check-infra:
+    parameters:
+      var_check_infra:
+        type: string
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: "Checks if infrastructure is up"
+          command: |
+            [[ << parameters.var_check_infra >> == "up" ]] && exit 0 || exit 1
   create-deployment:
     docker:
       - image: cimg/python:3.10
@@ -64,17 +75,21 @@ workflows:
             name: maven/default
             tag: 17.0.7
           command: 'clean test'
+      - check-infra:
+          name: check-infra
+          var_check_infra: $CHECK_INFRA
       - aws-ecr/build-and-push-image:
           name: build-push-image
           filters:
             branches:
               only:
                 - main
-          repo: "${AWS_ECR_REGISTRY_NAME}"
+          repo: $AWS_ECR_REGISTRY_NAME
           tag: "latest"
           dockerfile: Dockerfile-run
           path: .
           requires:
+            - check-infra
             - code-test
       - create-deployment:
           name: deploy-to-k8s
@@ -82,8 +97,8 @@ workflows:
             branches:
               only:
                 - main
-          cluster-name: "${AWS_EKS_CLUSTER_NAME}"
-          region: "${AWS_REGION}"
-          ecr-id: "${AWS_ECR_REGISTRY_ID}"
+          cluster-name: $AWS_EKS_CLUSTER_NAME
+          region: $AWS_REGION
+          ecr-id: $AWS_ECR_REGISTRY_ID
           requires:
             - build-push-image
