@@ -32,6 +32,10 @@ jobs:
         description: |
           AWS Account ID
         type: string
+      k8s-manifest:
+        description: |
+          k8s manifest file name
+        type: string
     steps:
       - checkout
       - run:
@@ -55,11 +59,11 @@ jobs:
       - run:
           name: Configure Kubectl
           command: |
-            aws eks update-kubeconfig --region us-west-2 --name iap-tmp-eks
+            aws eks update-kubeconfig --region << parameters.region >> --name << parameters.cluster-name >>
       - run:
           name: Apply k8s manifest
           command: |
-            kubectl apply -f k8s-manifest.yml
+            kubectl apply -f << parameters.k8s-manifest >>
             kubectl get services
 
 workflows:
@@ -100,5 +104,6 @@ workflows:
           cluster-name: $AWS_EKS_CLUSTER_NAME
           region: $AWS_REGION
           ecr-id: $AWS_ECR_REGISTRY_ID
+          k8s-manifest: "k8s-manifest.yml"
           requires:
             - build-push-image
