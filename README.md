@@ -4,18 +4,22 @@ This is a simple application to be used in the technical test of DevOps.
 
 ## Getting Started
 
+Related [infrastructure demo](https://github.com/guschiriboga/infra-demo) repository
+
 ### Prerequisites
 
 - Java Version 17
 - Spring Boot 3.0.5
 - Maven
+- CircleCI account
+- AWS account (refer to [infra-demo](https://github.com/guschiriboga/infra-demo#readme) repo README)
 
 ### Installation
 
 Clone this repo.
 
 ```bash
-git clone https://bitbucket.org/devsu/demo-devops-java.git
+git clone https://github.com/guschiriboga/java-demo.git
 ```
 
 ### Database
@@ -26,6 +30,7 @@ Consider giving access permissions to the file for proper functioning.
 
 ## Usage
 
+### Local run
 To run tests you can use this command.
 
 ```bash
@@ -40,7 +45,30 @@ mvn spring-boot:run
 
 Open http://127.0.0.1:8000/api/swagger-ui.html with your browser to see the result.
 
-### Features
+### run in AWS
+
++ Refer to [infrastructure demo](https://github.com/guschiriboga/infra-demo) repository
+
+#### Pre Configuration
+
+CircleCI account
++ If you logged in using Github, use your same repository project.
++ Add to your project the following environmental variables with the values created in AWS
+  + AWS_ACCESS_KEY_ID
+  + AWS_SECRET_ACCESS_KEY
++ Configure your project pipeline
+  + Use `.circleci/config.yml` file
+
+#### Deploy infrastructure
+
+_NOTE: Automated pipeline will exit with error if infrastructure isn't deploy before running it_
+
+Look into the last step of the job `deploy-to-k8s` for the `kubectl get services` output to get your app base URL
++ It should look like `<<something-here>>.<<region>>.elb.amazonaws.com`
+
+Open _<<base-url>>/api/swagger-ui.html_
+
+## Features
 
 These services can perform,
 
@@ -136,7 +164,3 @@ If the response is unsuccessful, we will receive status 400 and the following me
     ]
 }
 ```
-
-## License
-
-Copyright © 2023 Devsu. All rights reserved.
